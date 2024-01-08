@@ -133,5 +133,24 @@ FROM
   `active-cove-387220.NashvilleHousing.Nashville_Property`
 
 
+UPDATE
+  `active-cove-387220.NashvilleHousing.Nashville_Property`
+SET
+  SoldAsVacant =
+  CASE
+    WHEN SoldAsVacant = 'Y' THEN 'YES'
+    WHEN SoldAsVacant ='N' THEN 'NO'
+    WHEN SoldAsVacant = 'No' THEN 'NO'
+    WHEN SoldAsVacant = 'Yes' THEN 'YES'
+  ELSE
+  SoldAsVacant
+END
+WHERE
+  SoldAsVacant IN('Y',
+    'N',
+    'No',
+    'Yes')
+
+
 
 
