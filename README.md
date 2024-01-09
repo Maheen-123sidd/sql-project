@@ -132,7 +132,7 @@ END
 FROM
   `active-cove-387220.NashvilleHousing.Nashville_Property`
 
-
+**Updating the "sold as vacant" column**
 UPDATE
   `active-cove-387220.NashvilleHousing.Nashville_Property`
 SET
@@ -152,5 +152,65 @@ WHERE
     'Yes')
 
 
+**Query to delete duplicate rows, identified by UniqueID_**
+
+creating temp table to identify rows with duplicate values
+  Create TEMP TABLE TempToDelete AS
+SELECT
+  UniqueID_
+FROM (
+  SELECT
+    UniqueID_,
+    ROW_NUMBER() OVER
+  (PARTITION BY
+    ParcelID,
+    PropertyAddress,
+    SalePrice,
+    SaleDate,
+    LegalReference
+  ORDER BY
+    UniqueID_ ) AS ROW_NUM
+FROM
+  `active-cove-387220.NashvilleHousing.Nashville_Property`)
+  WHERE ROW_NUM > 1;
+**-- deleting duplicates from original table**
+  DELETE FROM `active-cove-387220.NashvilleHousing.Nashville_Property`
+  WHERE UniqueID_ IN (SELECT UniqueID_
+  from TempToDelete);
+
+ **--finally deleting the temp table**
+
+ drop table TempToDelete
+
+**IN order to check if the above query went through**
+
+SELECT
+  *
+FROM (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY ParcelID, PropertyAddress, SalePrice, SaleDate, LegalReference ORDER BY UniqueID_ ) AS ROW_NUM
+  FROM
+    `active-cove-387220.NashvilleHousing.Nashville_Property`)
+WHERE
+  ROW_NUM >1
+**
+**Deleting Columns that are not needed****
+
+ALTER TABLE `active-cove-387220.NashvilleHousing.Nashville_Property` 
+Drop Column
+SaleDate
+
+ALTER TABLE `active-cove-387220.NashvilleHousing.Nashville_Property` 
+Drop Column
+OwnerAddress
+
+ALTER TABLE `active-cove-387220.NashvilleHousing.Nashville_Property` 
+Drop Column
+PropertyAddress
+
+ALTER TABLE `active-cove-387220.NashvilleHousing.Nashville_Property` 
+Drop Column
+TaxDistrict
 
 
