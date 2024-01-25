@@ -1,1 +1,24 @@
+-- lets get an idea if the dat needs cleaning
 
+SELECT
+Invoice_ID ,
+count(*) as id_count
+  FROM `booming-entity-387019.random12.supermarket` 
+  group by Invoice_ID
+  having id_count > 1 ;
+
+-- sales made by member and normal customer
+
+select Customer_type,
+sum(Total), avg(Total)
+from
+`booming-entity-387019.random12.supermarket`
+where Customer_type  = 'Member'
+group by Customer_type
+
+select Customer_type,
+sum(Total), avg(Total)
+from
+`booming-entity-387019.random12.supermarket`
+where Customer_type  = 'Normal'
+group by Customer_type
